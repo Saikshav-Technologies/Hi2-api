@@ -1,0 +1,131 @@
+{
+  "info": {
+    "name": "User Controller",
+    "description": "User profile management endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get User Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/profile",
+          "protocol": "http",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "profile"]
+        }
+      }
+    },
+    {
+      "name": "Update User Profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"bio\": \"Software developer\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/profile",
+          "protocol": "http",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "profile"]
+        }
+      }
+    },
+    {
+      "name": "Upload Avatar",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "avatar",
+              "type": "file",
+              "src": "/path/to/image.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/avatar",
+          "protocol": "http",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "avatar"]
+        }
+      }
+    },
+    {
+      "name": "Get User By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/users/:id",
+          "protocol": "http",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "userId"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/users/profile",
+          "protocol": "http",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users", "profile"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "your_access_token_here",
+      "type": "string"
+    }
+  ]
+}
+
