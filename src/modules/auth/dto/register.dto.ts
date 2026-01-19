@@ -7,4 +7,19 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   password: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsString()
+  gender: string;
+
+  @IsString()
+  country: string;
+
+  @IsString()
+  contact: string;
 }

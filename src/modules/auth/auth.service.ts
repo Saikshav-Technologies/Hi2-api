@@ -9,10 +9,18 @@ import { User } from '@prisma/client';
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
-  async register(email: string, password: string) {
+  async register(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    gender: string,
+    country: string,
+    contact: string
+  ) {
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -27,6 +35,11 @@ export class AuthService {
       data: {
         email,
         password: hashedPassword,
+        firstName,
+        lastName,
+        gender,
+        country,
+        contact,
       },
       select: {
         id: true,
@@ -137,7 +150,7 @@ export class AuthService {
       {
         secret: config.jwt.accessSecret,
         expiresIn: config.jwt.accessExpiresIn,
-      },
+      }
     );
   }
 
@@ -150,7 +163,7 @@ export class AuthService {
       {
         secret: config.jwt.refreshSecret,
         expiresIn: config.jwt.refreshExpiresIn,
-      },
+      }
     );
   }
 }
