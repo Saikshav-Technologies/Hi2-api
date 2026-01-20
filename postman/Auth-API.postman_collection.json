@@ -1,0 +1,215 @@
+{
+    "info": {
+        "_postman_id": "auth-api-collection",
+        "name": "Auth API",
+        "description": "Authentication API endpoints for user registration, login, token refresh, and logout operations",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Register",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"gender\": \"male\",\n    \"country\": \"USA\",\n    \"contact\": \"+1234567890\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/register",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "register"
+                    ]
+                },
+                "description": "Register a new user account with email, password, and profile information"
+            },
+            "response": []
+        },
+        {
+            "name": "Login",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    if (response.data && response.data.accessToken) {",
+                            "        pm.environment.set(\"accessToken\", response.data.accessToken);",
+                            "    }",
+                            "    if (response.data && response.data.refreshToken) {",
+                            "        pm.environment.set(\"refreshToken\", response.data.refreshToken);",
+                            "    }",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/login",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "login"
+                    ]
+                },
+                "description": "Login with email and password to receive access and refresh tokens"
+            },
+            "response": []
+        },
+        {
+            "name": "Refresh Token",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    if (response.data && response.data.accessToken) {",
+                            "        pm.environment.set(\"accessToken\", response.data.accessToken);",
+                            "    }",
+                            "    if (response.data && response.data.refreshToken) {",
+                            "        pm.environment.set(\"refreshToken\", response.data.refreshToken);",
+                            "    }",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/refresh",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "refresh"
+                    ]
+                },
+                "description": "Refresh access token using a valid refresh token"
+            },
+            "response": []
+        },
+        {
+            "name": "Logout",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/logout",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "logout"
+                    ]
+                },
+                "description": "Logout from current session by invalidating the refresh token"
+            },
+            "response": []
+        },
+        {
+            "name": "Logout All Devices",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": ""
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/auth/logout-all",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "logout-all"
+                    ]
+                },
+                "description": "Logout from all devices by invalidating all refresh tokens. Requires authentication."
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}
