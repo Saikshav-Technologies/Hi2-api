@@ -65,7 +65,7 @@ export class UsersService {
       bio?: string;
       birthday?: Date;
       isPrivate?: boolean;
-    },
+    }
   ) {
     if (data.username) {
       const existing = await this.prisma.user.findUnique({
@@ -154,7 +154,7 @@ export class UsersService {
 
     const [posts, total] = await Promise.all([
       this.prisma.post.findMany({
-        where: { authorId: userId },
+        where: { authorId: userId, deletedAt: null },
         include: {
           author: {
             select: {
@@ -177,7 +177,7 @@ export class UsersService {
         take: limit,
       }),
       this.prisma.post.count({
-        where: { authorId: userId },
+        where: { authorId: userId, deletedAt: null },
       }),
     ]);
 

@@ -1,0 +1,262 @@
+{
+    "info": {
+        "_postman_id": "users-api-collection",
+        "name": "Users API",
+        "description": "User management API endpoints for profile operations, avatar management, and user posts",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get User Profile",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/:userId",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "user-id-here",
+                            "description": "User ID or username"
+                        }
+                    ]
+                },
+                "description": "Get user profile by userId. Authentication is optional - if provided, response includes additional information like follow status."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Profile",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe\",\n    \"bio\": \"Software developer and tech enthusiast\",\n    \"birthday\": \"1990-01-15\",\n    \"isPrivate\": false\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/profile",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "profile"
+                    ]
+                },
+                "description": "Update current user's profile information. All fields are optional. Requires authentication."
+            },
+            "response": []
+        },
+        {
+            "name": "Generate Avatar Upload URL",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "if (pm.response.code === 200) {",
+                            "    const response = pm.response.json();",
+                            "    if (response.data && response.data.uploadUrl) {",
+                            "        pm.environment.set(\"avatarUploadUrl\", response.data.uploadUrl);",
+                            "    }",
+                            "    if (response.data && response.data.key) {",
+                            "        pm.environment.set(\"avatarKey\", response.data.key);",
+                            "    }",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"contentType\": \"image/jpeg\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/avatar/upload-url",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "avatar",
+                        "upload-url"
+                    ]
+                },
+                "description": "Generate a presigned URL for uploading avatar to S3. Returns uploadUrl and key. Use the uploadUrl to PUT your image file. Requires authentication."
+            },
+            "response": []
+        },
+        {
+            "name": "Upload Avatar to S3",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "image/jpeg",
+                        "type": "text",
+                        "description": "Set to match your image type"
+                    }
+                ],
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": ""
+                    }
+                },
+                "url": {
+                    "raw": "{{avatarUploadUrl}}",
+                    "host": [
+                        "{{avatarUploadUrl}}"
+                    ]
+                },
+                "description": "Upload the avatar image to S3 using the presigned URL from the previous step. This is a direct upload to S3, not your backend."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Avatar",
+            "request": {
+                "auth": {
+                    "type": "bearer",
+                    "bearer": [
+                        {
+                            "key": "token",
+                            "value": "{{accessToken}}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"key\": \"{{avatarKey}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/avatar",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "avatar"
+                    ]
+                },
+                "description": "Update user's avatar URL after successfully uploading the image to S3. Use the key returned from Generate Avatar Upload URL. Requires authentication."
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Posts",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/api/users/:userId/posts?page=1&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId",
+                        "posts"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1",
+                            "description": "Page number (default: 1)"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10",
+                            "description": "Number of posts per page (default: 10)"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "user-id-here",
+                            "description": "User ID"
+                        }
+                    ]
+                },
+                "description": "Get paginated list of posts by a specific user. No authentication required."
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}

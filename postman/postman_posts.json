@@ -1,0 +1,532 @@
+{
+  "info": {
+    "name": "Posts API",
+    "description": "Complete Postman collection for Posts Controller endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token (required - user must be authenticated)"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"This is my first post! Excited to share my thoughts with everyone.\",\n  \"imageKey\": \"posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/posts",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "posts"
+          ]
+        },
+        "description": "Create a new post. Requires authentication. The userId is extracted from the JWT token."
+      },
+      "response": [
+        {
+          "name": "Success - Post Created",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is my first post!\",\n  \"imageKey\": \"posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/posts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"post-123-uuid\",\n    \"content\": \"This is my first post! Excited to share my thoughts with everyone.\",\n    \"imageUrl\": \"https://s3.amazonaws.com/bucket/posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\",\n    \"authorId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"createdAt\": \"2023-01-10T12:00:00Z\",\n    \"updatedAt\": \"2023-01-10T12:00:00Z\",\n    \"likes\": 0,\n    \"comments\": 0\n  }\n}"
+        },
+        {
+          "name": "Error - Unauthorized",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is my first post!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/posts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": false,\n  \"error\": \"Unauthorized\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Single Post",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token (optional - used to check if current user liked the post)"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/posts/:postId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "posts",
+            ":postId"
+          ],
+          "variable": [
+            {
+              "key": "postId",
+              "value": "post-123-uuid",
+              "description": "UUID of the post to retrieve"
+            }
+          ]
+        },
+        "description": "Fetch a single post by ID. Authentication is optional. If authenticated, includes information about whether the current user liked it."
+      },
+      "response": [
+        {
+          "name": "Success - Post Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/posts/post-123-uuid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "post-123-uuid"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"post-123-uuid\",\n    \"content\": \"This is my first post!\",\n    \"imageUrl\": \"https://s3.amazonaws.com/bucket/posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\",\n    \"authorId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"author\": {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"username\": \"johndoe\",\n      \"avatarUrl\": \"https://s3.amazonaws.com/bucket/avatars/550e8400-e29b-41d4-a716-446655440000.jpg\"\n    },\n    \"createdAt\": \"2023-01-10T12:00:00Z\",\n    \"updatedAt\": \"2023-01-10T12:00:00Z\",\n    \"likes\": 5,\n    \"comments\": 2,\n    \"isLikedByCurrentUser\": true\n  }\n}"
+        },
+        {
+          "name": "Error - Post Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/posts/non-existent-id",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "non-existent-id"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": false,\n  \"error\": \"Post not found\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Update Post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token (required - user must be authenticated and be the post author)"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"This is my updated first post! Now with better content.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/posts/:postId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "posts",
+            ":postId"
+          ],
+          "variable": [
+            {
+              "key": "postId",
+              "value": "post-123-uuid",
+              "description": "UUID of the post to update"
+            }
+          ]
+        },
+        "description": "Update an existing post. Requires authentication. Only the post author can update their own posts."
+      },
+      "response": [
+        {
+          "name": "Success - Post Updated",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated post content\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/posts/post-123-uuid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "post-123-uuid"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"post-123-uuid\",\n    \"content\": \"This is my updated first post! Now with better content.\",\n    \"imageUrl\": \"https://s3.amazonaws.com/bucket/posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\",\n    \"authorId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"createdAt\": \"2023-01-10T12:00:00Z\",\n    \"updatedAt\": \"2023-01-10T13:30:00Z\",\n    \"likes\": 5,\n    \"comments\": 2\n  }\n}"
+        },
+        {
+          "name": "Error - Unauthorized",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated content\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/posts/post-123-uuid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "post-123-uuid"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": false,\n  \"error\": \"Unauthorized\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete Post",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token (required - user must be authenticated and be the post author)"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/posts/:postId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "posts",
+            ":postId"
+          ],
+          "variable": [
+            {
+              "key": "postId",
+              "value": "post-123-uuid",
+              "description": "UUID of the post to delete"
+            }
+          ]
+        },
+        "description": "Delete an existing post. Requires authentication. Only the post author can delete their own posts."
+      },
+      "response": [
+        {
+          "name": "Success - Post Deleted",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/posts/post-123-uuid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "post-123-uuid"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": true,\n  \"message\": \"Post deleted successfully\"\n}"
+        },
+        {
+          "name": "Error - Unauthorized (Not Author)",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (different user)\"\n              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/posts/post-123-uuid",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts",
+                "post-123-uuid"
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": false,\n  \"error\": \"You are not authorized to delete this post\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get All Posts (Feed)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token (optional)"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/posts?page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number (default: 1)"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Number of posts per page (default: 10)"
+            }
+          ]
+        },
+        "description": "Fetch all posts with pagination. Supports optional authentication. If authenticated, includes information about which posts the current user has liked."
+      },
+      "response": [
+        {
+          "name": "Success - Posts Retrieved",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/posts?page=1&limit=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"posts\": [\n      {\n        \"id\": \"post-123-uuid\",\n        \"content\": \"This is my first post!\",\n        \"imageUrl\": \"https://s3.amazonaws.com/bucket/posts/550e8400-e29b-41d4-a716-446655440000/image-123.jpg\",\n        \"authorId\": \"550e8400-e29b-41d4-a716-446655440000\",\n        \"author\": {\n          \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n          \"username\": \"johndoe\",\n          \"avatarUrl\": \"https://s3.amazonaws.com/bucket/avatars/550e8400-e29b-41d4-a716-446655440000.jpg\"\n        },\n        \"createdAt\": \"2023-01-10T12:00:00Z\",\n        \"updatedAt\": \"2023-01-10T12:00:00Z\",\n        \"likes\": 5,\n        \"comments\": 2,\n        \"isLikedByCurrentUser\": true\n      },\n      {\n        \"id\": \"post-456-uuid\",\n        \"content\": \"Another great post!\",\n        \"imageUrl\": null,\n        \"authorId\": \"user-456-uuid\",\n        \"author\": {\n          \"id\": \"user-456-uuid\",\n          \"username\": \"janedoe\",\n          \"avatarUrl\": \"https://s3.amazonaws.com/bucket/avatars/user-456-uuid.jpg\"\n        },\n        \"createdAt\": \"2023-01-09T15:30:00Z\",\n        \"updatedAt\": \"2023-01-09T15:30:00Z\",\n        \"likes\": 12,\n        \"comments\": 5,\n        \"isLikedByCurrentUser\": false\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"total\": 25,\n      \"pages\": 3\n    }\n  }\n}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL of the API"
+    },
+    {
+      "key": "access_token",
+      "value": "your_jwt_token_here",
+      "type": "string",
+      "description": "JWT access token obtained from login endpoint"
+    },
+    {
+      "key": "postId",
+      "value": "post-123-uuid",
+      "type": "string",
+      "description": "UUID of a post"
+    },
+    {
+      "key": "userId",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string",
+      "description": "UUID of a user"
+    }
+  ]
+}
+

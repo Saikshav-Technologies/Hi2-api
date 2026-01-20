@@ -1,10 +1,15 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsArray, IsOptional, IsString, ArrayMaxSize } from 'class-validator';
 
 export class CreatePostDto {
   @IsString()
-  content: string;
+  caption: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMaxSize(10)
+  mediaUrls: string[];
 
   @IsString()
   @IsOptional()
-  imageKey?: string;
+  idempotencyKey?: string;
 }
