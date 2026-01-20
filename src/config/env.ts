@@ -23,7 +23,7 @@ export const config = {
     s3Bucket: process.env.S3_BUCKET || 'hi2-uploads',
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3001',
     credentials: true,
   },
 };
