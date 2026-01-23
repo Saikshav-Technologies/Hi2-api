@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Get User Profile",
+    "description": "API request to fetch a user's profile with optional authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Profile - Authenticated",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLWlkLWhlcmUiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature",
+            "description": "JWT access token from login response"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users/:userId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "users",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "550e8400-e29b-41d4-a716-446655440000",
+              "description": "UUID of the user whose profile you want to fetch"
+            }
+          ]
+        },
+        "description": "Fetch a user's profile when authenticated. The currentUserId will be extracted from the JWT token."
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLWlkLWhlcmUiLCJpYXQiOjE2NzMwOTExNDcsImV4cCI6MTY3MzE3NzU0N30.signature"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/users/550e8400-e29b-41d4-a716-446655440000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "550e8400-e29b-41d4-a716-446655440000"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"user@example.com\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe\",\n    \"bio\": \"Software developer and tech enthusiast\",\n    \"avatarUrl\": \"https://s3.amazonaws.com/bucket/avatar-123.jpg\",\n    \"birthday\": \"1990-05-15\",\n    \"isPrivate\": false,\n    \"createdAt\": \"2023-01-10T12:00:00Z\",\n    \"updatedAt\": \"2023-01-10T15:30:00Z\",\n    \"isFollowing\": true,\n    \"isFollowedBy\": false\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Profile - Unauthenticated",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users/:userId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "users",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "550e8400-e29b-41d4-a716-446655440000",
+              "description": "UUID of the user whose profile you want to fetch"
+            }
+          ]
+        },
+        "description": "Fetch a user's profile without authentication. currentUserId will be undefined (null)."
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/users/550e8400-e29b-41d4-a716-446655440000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "users",
+                "550e8400-e29b-41d4-a716-446655440000"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"user@example.com\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe\",\n    \"bio\": \"Software developer and tech enthusiast\",\n    \"avatarUrl\": \"https://s3.amazonaws.com/bucket/avatar-123.jpg\",\n    \"birthday\": \"1990-05-15\",\n    \"isPrivate\": false,\n    \"createdAt\": \"2023-01-10T12:00:00Z\",\n    \"updatedAt\": \"2023-01-10T15:30:00Z\",\n    \"isFollowing\": null,\n    \"isFollowedBy\": null\n  }\n}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "your_jwt_token_here",
+      "type": "string",
+      "description": "JWT access token obtained from login endpoint"
+    }
+  ]
+}
+
