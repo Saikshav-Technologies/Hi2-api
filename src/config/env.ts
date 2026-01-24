@@ -22,6 +22,11 @@ export const config = {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
     s3Bucket: process.env.S3_BUCKET || 'hi2-uploads',
   },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'derdpr7bh',
+    apiKey: process.env.CLOUDINARY_API_KEY || '922826698873334',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || 'XiVJEIOJfQp1egqiBkMWZ--tlQU',
+  },
   cors: {
     origin: process.env.CORS_ORIGIN
       ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())

@@ -1,0 +1,315 @@
+{
+    "info": {
+        "name": "Cloudinary Upload API",
+        "description": "Collection for testing Cloudinary upload endpoints\n\n📋 TWO UPLOAD METHODS:\n\n🚀 SIMPLE METHOD (Recommended):\n1. Set 'accessToken' variable\n2. Use 'Post Image - Upload to Backend' - select your image and send\n3. Done! Backend handles everything\n\n🔧 ADVANCED METHOD (Client-side upload):\n1. Get signature from backend\n2. Upload directly to Cloudinary API\n3. More control, but requires two steps\n\nSee folder organization below ⬇️",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "🚀 Simple Method (Backend Upload)",
+            "item": [
+                {
+                    "name": "Post Image - Upload to Backend",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Select an image file - jpg, png, gif, etc."
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/image/cloudinary-upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "image",
+                                "cloudinary-upload"
+                            ]
+                        },
+                        "description": "✅ EASIEST METHOD - One-step upload\n\n1. Click Body tab\n2. Click 'image' field dropdown\n3. Select 'Select Files' and choose an image\n4. Click Send\n\nThe backend will:\n- Validate the image\n- Upload to Cloudinary\n- Return the image URL\n\nNo need for signatures or multiple steps!"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Event Image - Upload to Backend",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "Select an image file - jpg, png, gif, etc."
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/image/cloudinary-upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "image",
+                                "cloudinary-upload"
+                            ]
+                        },
+                        "description": "✅ EASIEST METHOD - One-step upload for event images\n\n1. Click Body tab\n2. Click 'image' field dropdown\n3. Select 'Select Files' and choose an image\n4. Click Send\n\nThe backend handles everything automatically!"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Simplest way to upload - just send the image file to your backend. Backend handles the Cloudinary upload."
+        },
+        {
+            "name": "🔧 Advanced Method (Client-side Upload)",
+            "item": [
+                {
+                    "name": "Post Image - Cloudinary Signature",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"resourceType\": \"image\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/image/cloudinary-signature",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "image",
+                                "cloudinary-signature"
+                            ]
+                        },
+                        "description": "Get Cloudinary upload signature for post images. Use the returned signature to upload directly to Cloudinary."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Auto-populate variables for the next request",
+                                    "const response = pm.response.json();",
+                                    "",
+                                    "if (response.success && response.data) {",
+                                    "    pm.collectionVariables.set('signature', response.data.signature);",
+                                    "    pm.collectionVariables.set('timestamp', response.data.timestamp);",
+                                    "    pm.collectionVariables.set('apiKey', response.data.apiKey);",
+                                    "    pm.collectionVariables.set('cloudName', response.data.cloudName);",
+                                    "    pm.collectionVariables.set('folder', response.data.folder);",
+                                    "    ",
+                                    "    console.log('✅ Variables set successfully! Now you can run the \"Upload to Cloudinary\" request.');",
+                                    "    console.log('📁 Folder:', response.data.folder);",
+                                    "} else {",
+                                    "    console.error('❌ Failed to get signature');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Event Image - Cloudinary Signature",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"resourceType\": \"image\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/image/cloudinary-signature",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "image",
+                                "cloudinary-signature"
+                            ]
+                        },
+                        "description": "Get Cloudinary upload signature for event images. Use the returned signature to upload directly to Cloudinary."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Auto-populate variables for the next request",
+                                    "const response = pm.response.json();",
+                                    "",
+                                    "if (response.success && response.data) {",
+                                    "    pm.collectionVariables.set('signature', response.data.signature);",
+                                    "    pm.collectionVariables.set('timestamp', response.data.timestamp);",
+                                    "    pm.collectionVariables.set('apiKey', response.data.apiKey);",
+                                    "    pm.collectionVariables.set('cloudName', response.data.cloudName);",
+                                    "    pm.collectionVariables.set('folder', response.data.folder);",
+                                    "    ",
+                                    "    console.log('✅ Variables set successfully! Now you can run the \"Upload to Cloudinary\" request.');",
+                                    "    console.log('📁 Folder:', response.data.folder);",
+                                    "} else {",
+                                    "    console.error('❌ Failed to get signature');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload to Cloudinary (Direct)",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": [],
+                                    "description": "REQUIRED: Click 'Select Files' and choose an image file from your computer"
+                                },
+                                {
+                                    "key": "signature",
+                                    "value": "{{signature}}",
+                                    "type": "text",
+                                    "description": "Auto-populated from Test script in previous request"
+                                },
+                                {
+                                    "key": "timestamp",
+                                    "value": "{{timestamp}}",
+                                    "type": "text",
+                                    "description": "Auto-populated from Test script in previous request"
+                                },
+                                {
+                                    "key": "api_key",
+                                    "value": "{{apiKey}}",
+                                    "type": "text",
+                                    "description": "Auto-populated from Test script in previous request"
+                                },
+                                {
+                                    "key": "folder",
+                                    "value": "{{folder}}",
+                                    "type": "text",
+                                    "description": "Auto-populated from Test script in previous request"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "https://api.cloudinary.com/v1_1/{{cloudName}}/image/upload",
+                            "protocol": "https",
+                            "host": [
+                                "api",
+                                "cloudinary",
+                                "com"
+                            ],
+                            "path": [
+                                "v1_1",
+                                "{{cloudName}}",
+                                "image",
+                                "upload"
+                            ]
+                        },
+                        "description": "STEP 3: Direct upload to Cloudinary\n\nIMPORTANT: Before sending this request:\n1. First run 'Post Image - Cloudinary Signature' request to get credentials\n2. In the Body tab below, click on 'file' field and select 'Select Files' to choose an image\n3. The other fields (signature, timestamp, api_key, folder, cloudName) will be auto-populated from the previous request\n4. Click Send\n\nThis request goes directly to Cloudinary's API, not your backend."
+                    },
+                    "response": []
+                }
+            ],
+            "description": "For advanced use - get signature from backend, then upload directly to Cloudinary API from your client."
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "signature",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "timestamp",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "apiKey",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "cloudName",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "folder",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
