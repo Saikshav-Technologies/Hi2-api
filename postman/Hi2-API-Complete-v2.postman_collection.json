@@ -1,0 +1,1732 @@
+{
+    "info": {
+        "_postman_id": "hi2-complete-api-collection-v2",
+        "name": "Hi2 Backend - Complete API v2",
+        "description": "Complete API collection for Hi2 social platform backend with Cloudinary integration",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data && response.data.accessToken) {",
+                                    "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                                    "        pm.collectionVariables.set('refreshToken', response.data.refreshToken);",
+                                    "        pm.collectionVariables.set('userId', response.data.user.id);",
+                                    "        console.log('Access token saved:', response.data.accessToken);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePassword123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"gender\": \"male\",\n  \"country\": \"USA\",\n  \"contact\": \"+1234567890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user account"
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data && response.data.accessToken) {",
+                                    "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                                    "        pm.collectionVariables.set('refreshToken', response.data.refreshToken);",
+                                    "        pm.collectionVariables.set('userId', response.data.user.id);",
+                                    "        console.log('Access token saved:', response.data.accessToken);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login with email and password to get access and refresh tokens"
+                    }
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refresh access token using refresh token"
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout and invalidate refresh token"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/{{userId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{userId}}"
+                            ]
+                        },
+                        "description": "Get user profile (auth optional; shows additional info when authenticated)"
+                    }
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Updated\",\n  \"bio\": \"Software developer and entrepreneur\",\n  \"location\": \"San Francisco, CA\",\n  \"website\": \"https://example.com\",\n  \"birthday\": \"1990-05-15\",\n  \"gender\": \"male\",\n  \"country\": \"USA\",\n  \"contact\": \"+1234567890\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "profile"
+                            ]
+                        },
+                        "description": "Update current user's profile (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Generate Avatar Upload URL (S3)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"contentType\": \"image/jpeg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/avatar/upload-url",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "avatar",
+                                "upload-url"
+                            ]
+                        },
+                        "description": "Generate pre-signed URL for avatar upload to S3"
+                    }
+                },
+                {
+                    "name": "Update Avatar URL",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"avatarUrl\": \"https://s3.example.com/avatars/user123/avatar.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/avatar",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "avatar"
+                            ]
+                        },
+                        "description": "Update user's avatar URL in database"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Posts",
+            "item": [
+                {
+                    "name": "Create Post",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"caption\": \"Sunset walk by the beach\",\n  \"mediaUrls\": [\"https://cdn.example.com/media/photo1.jpg\", \"https://cdn.example.com/media/photo2.jpg\"],\n  \"idempotencyKey\": \"req-123e4567-e89b-12d3-a456-426614174000\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ]
+                        },
+                        "description": "Create a new post (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get Posts (Paginated)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Page size (default 10)"
+                                }
+                            ]
+                        },
+                        "description": "Get all posts paginated, newest first. Auth optional; when provided, includes isLiked"
+                    }
+                },
+                {
+                    "name": "Get Single Post",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}"
+                            ]
+                        },
+                        "description": "Get a single post by ID"
+                    }
+                },
+                {
+                    "name": "Update Post",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"caption\": \"Updated caption for my post\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}"
+                            ]
+                        },
+                        "description": "Update post caption (owner only, requires authentication)"
+                    }
+                },
+                {
+                    "name": "Delete Post",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}"
+                            ]
+                        },
+                        "description": "Soft delete a post (owner only, requires authentication)"
+                    }
+                },
+                {
+                    "name": "Generate Post Image Upload URL (S3)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"contentType\": \"image/jpeg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/image/upload-url",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "image",
+                                "upload-url"
+                            ]
+                        },
+                        "description": "Generate pre-signed URL for post image upload to S3"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cloudinary - Avatar",
+            "item": [
+                {
+                    "name": "Upload Avatar to Cloudinary",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data && response.data.publicId) {",
+                                    "        pm.collectionVariables.set('avatarPublicId', response.data.publicId);",
+                                    "        pm.collectionVariables.set('avatarUrl', response.data.url);",
+                                    "        console.log('Avatar public ID saved:', response.data.publicId);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/avatar/cloudinary-upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "avatar",
+                                "cloudinary-upload"
+                            ]
+                        },
+                        "description": "Upload avatar image directly to Cloudinary (server-side upload). Avatar URL is automatically saved to user profile."
+                    }
+                },
+                {
+                    "name": "Get User Avatar",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/avatar/{{userId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "avatar",
+                                "{{userId}}"
+                            ]
+                        },
+                        "description": "Get avatar for a specific user (public endpoint, no auth required)"
+                    }
+                },
+                {
+                    "name": "Delete Avatar",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/avatar/cloudinary",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "avatar",
+                                "cloudinary"
+                            ]
+                        },
+                        "description": "Delete current user's avatar from Cloudinary"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cloudinary - Post Images",
+            "item": [
+                {
+                    "name": "Upload Post Image to Cloudinary",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data && response.data.publicId) {",
+                                    "        pm.collectionVariables.set('postImagePublicId', response.data.publicId);",
+                                    "        pm.collectionVariables.set('postImageUrl', response.data.url);",
+                                    "        const encodedPublicId = Buffer.from(response.data.publicId).toString('base64');",
+                                    "        pm.collectionVariables.set('postImagePublicIdEncoded', encodedPublicId);",
+                                    "        console.log('Post image public ID saved:', response.data.publicId);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/image/cloudinary-upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "image",
+                                "cloudinary-upload"
+                            ]
+                        },
+                        "description": "Upload post image directly to Cloudinary (server-side upload). Returns secure URL to use in post creation."
+                    }
+                },
+                {
+                    "name": "Generate Post Image Signature (Client Upload)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data) {",
+                                    "        pm.collectionVariables.set('cloudinarySignature', response.data.signature);",
+                                    "        pm.collectionVariables.set('cloudinaryTimestamp', response.data.timestamp);",
+                                    "        pm.collectionVariables.set('cloudinaryFolder', response.data.folder);",
+                                    "        pm.collectionVariables.set('cloudinaryApiKey', response.data.apiKey);",
+                                    "        pm.collectionVariables.set('cloudinaryCloudName', response.data.cloudName);",
+                                    "        console.log('Cloudinary signature saved for client-side upload');",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/image/cloudinary-signature",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "image",
+                                "cloudinary-signature"
+                            ]
+                        },
+                        "description": "Generate Cloudinary upload signature for client-side post image upload"
+                    }
+                },
+                {
+                    "name": "List User's Post Images",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/images/list?maxResults=50",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "images",
+                                "list"
+                            ],
+                            "query": [
+                                {
+                                    "key": "maxResults",
+                                    "value": "50",
+                                    "description": "Maximum number of images to return (default 50, max 100)"
+                                }
+                            ]
+                        },
+                        "description": "List all post images uploaded by the authenticated user"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cloudinary - Event Images",
+            "item": [
+                {
+                    "name": "Upload Event Image to Cloudinary",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200 || pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.data && response.data.publicId) {",
+                                    "        pm.collectionVariables.set('eventImagePublicId', response.data.publicId);",
+                                    "        pm.collectionVariables.set('eventImageUrl', response.data.url);",
+                                    "        const encodedPublicId = Buffer.from(response.data.publicId).toString('base64');",
+                                    "        pm.collectionVariables.set('eventImagePublicIdEncoded', encodedPublicId);",
+                                    "        console.log('Event image public ID saved:', response.data.publicId);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/image/cloudinary-upload",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "image",
+                                "cloudinary-upload"
+                            ]
+                        },
+                        "description": "Upload event image directly to Cloudinary (server-side upload). Returns secure URL to use in event creation."
+                    }
+                },
+                {
+                    "name": "Generate Event Image Signature (Client Upload)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/image/cloudinary-signature",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "image",
+                                "cloudinary-signature"
+                            ]
+                        },
+                        "description": "Generate Cloudinary upload signature for client-side event image upload"
+                    }
+                },
+                {
+                    "name": "List User's Event Images",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/images/list?maxResults=50",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "images",
+                                "list"
+                            ],
+                            "query": [
+                                {
+                                    "key": "maxResults",
+                                    "value": "50",
+                                    "description": "Maximum number of images to return (default 50, max 100)"
+                                }
+                            ]
+                        },
+                        "description": "List all event images uploaded by the authenticated user"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cloudinary - Image Management",
+            "item": [
+                {
+                    "name": "Get Image Metadata",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/images/cloudinary/{{postImagePublicIdEncoded}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "images",
+                                "cloudinary",
+                                "{{postImagePublicIdEncoded}}"
+                            ]
+                        },
+                        "description": "Get metadata for a Cloudinary image by public ID (base64 encoded). Use postImagePublicIdEncoded or eventImagePublicIdEncoded variable."
+                    }
+                },
+                {
+                    "name": "Delete Image from Cloudinary",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/images/cloudinary/{{postImagePublicIdEncoded}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "images",
+                                "cloudinary",
+                                "{{postImagePublicIdEncoded}}"
+                            ]
+                        },
+                        "description": "Delete an image from Cloudinary by public ID (base64 encoded). User can only delete their own images."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Likes",
+            "item": [
+                {
+                    "name": "Toggle Like",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}/like",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}",
+                                "like"
+                            ]
+                        },
+                        "description": "Toggle like on a post (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get Post Likes",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}/likes?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}",
+                                "likes"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20",
+                                    "description": "Page size (default 20)"
+                                }
+                            ]
+                        },
+                        "description": "Get list of users who liked a post"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Comments",
+            "item": [
+                {
+                    "name": "Create Comment",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"content\": \"This is a great post!\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}/comments",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}",
+                                "comments"
+                            ]
+                        },
+                        "description": "Create a comment on a post (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get Post Comments",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/{{postId}}/comments?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "{{postId}}",
+                                "comments"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20",
+                                    "description": "Page size (default 20)"
+                                }
+                            ]
+                        },
+                        "description": "Get comments on a post with pagination"
+                    }
+                },
+                {
+                    "name": "Update Comment",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"content\": \"Updated comment content\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/comments/{{commentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "comments",
+                                "{{commentId}}"
+                            ]
+                        },
+                        "description": "Update a comment (owner only, requires authentication)"
+                    }
+                },
+                {
+                    "name": "Delete Comment",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/comments/{{commentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "comments",
+                                "{{commentId}}"
+                            ]
+                        },
+                        "description": "Delete a comment (owner only, requires authentication)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Events",
+            "item": [
+                {
+                    "name": "Create Event",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Summer Beach Party\",\n  \"description\": \"Join us for an amazing beach party!\",\n  \"location\": \"Santa Monica Beach\",\n  \"startDate\": \"2026-06-15T18:00:00Z\",\n  \"endDate\": \"2026-06-15T23:00:00Z\",\n  \"imageUrl\": \"https://cdn.example.com/event-image.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events"
+                            ]
+                        },
+                        "description": "Create a new event (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get Events (Paginated)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Page size (default 10)"
+                                }
+                            ]
+                        },
+                        "description": "Get all events with pagination"
+                    }
+                },
+                {
+                    "name": "Get Single Event",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text",
+                                "disabled": true
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}"
+                            ]
+                        },
+                        "description": "Get a single event by ID"
+                    }
+                },
+                {
+                    "name": "Update Event",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Updated Event Title\",\n  \"description\": \"Updated description\",\n  \"location\": \"New Location\",\n  \"startDate\": \"2026-06-16T18:00:00Z\",\n  \"endDate\": \"2026-06-16T23:00:00Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}"
+                            ]
+                        },
+                        "description": "Update an event (owner only, requires authentication)"
+                    }
+                },
+                {
+                    "name": "Delete Event",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}"
+                            ]
+                        },
+                        "description": "Delete an event (owner only, requires authentication)"
+                    }
+                },
+                {
+                    "name": "Generate Event Image Upload URL (S3)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"contentType\": \"image/jpeg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/image/upload-url",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "image",
+                                "upload-url"
+                            ]
+                        },
+                        "description": "Generate pre-signed URL for event image upload to S3"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "RSVPs",
+            "item": [
+                {
+                    "name": "Upsert RSVP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"going\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}/rsvp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}",
+                                "rsvp"
+                            ]
+                        },
+                        "description": "Create or update RSVP for an event. Status can be: going, interested, not_going (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get RSVP",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}/rsvp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}",
+                                "rsvp"
+                            ]
+                        },
+                        "description": "Get current user's RSVP for an event (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get RSVP Counts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}/rsvp/counts",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}",
+                                "rsvp",
+                                "counts"
+                            ]
+                        },
+                        "description": "Get RSVP counts for an event (going, interested, not_going)"
+                    }
+                },
+                {
+                    "name": "Get RSVPs List",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}/rsvps?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}",
+                                "rsvps"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20",
+                                    "description": "Page size (default 20)"
+                                }
+                            ]
+                        },
+                        "description": "Get list of RSVPs for an event with pagination"
+                    }
+                },
+                {
+                    "name": "Delete RSVP",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/{{eventId}}/rsvp",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "{{eventId}}",
+                                "rsvp"
+                            ]
+                        },
+                        "description": "Delete RSVP for an event (requires authentication)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Follows",
+            "item": [
+                {
+                    "name": "Toggle Follow",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/{{userId}}/follow",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{userId}}",
+                                "follow"
+                            ]
+                        },
+                        "description": "Toggle follow/unfollow a user (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Get Followers",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/{{userId}}/followers?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{userId}}",
+                                "followers"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20",
+                                    "description": "Page size (default 20)"
+                                }
+                            ]
+                        },
+                        "description": "Get list of followers for a user"
+                    }
+                },
+                {
+                    "name": "Get Following",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/{{userId}}/following?page=1&limit=20",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "{{userId}}",
+                                "following"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "20",
+                                    "description": "Page size (default 20)"
+                                }
+                            ]
+                        },
+                        "description": "Get list of users that a user is following"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Feed",
+            "item": [
+                {
+                    "name": "Get Feed",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/feed?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "feed"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default 1)"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Page size (default 10)"
+                                }
+                            ]
+                        },
+                        "description": "Get personalized feed for current user (requires authentication)"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string",
+            "description": "JWT access token from login/register"
+        },
+        {
+            "key": "refreshToken",
+            "value": "",
+            "type": "string",
+            "description": "Refresh token from login/register"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string",
+            "description": "User ID (auto-populated from login/register)"
+        },
+        {
+            "key": "postId",
+            "value": "",
+            "type": "string",
+            "description": "Replace with actual post ID"
+        },
+        {
+            "key": "commentId",
+            "value": "",
+            "type": "string",
+            "description": "Replace with actual comment ID"
+        },
+        {
+            "key": "eventId",
+            "value": "",
+            "type": "string",
+            "description": "Replace with actual event ID"
+        },
+        {
+            "key": "avatarPublicId",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary avatar public ID (auto-populated)"
+        },
+        {
+            "key": "avatarUrl",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary avatar URL (auto-populated)"
+        },
+        {
+            "key": "postImagePublicId",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary post image public ID (auto-populated)"
+        },
+        {
+            "key": "postImagePublicIdEncoded",
+            "value": "",
+            "type": "string",
+            "description": "Base64 encoded post image public ID for URL (auto-populated)"
+        },
+        {
+            "key": "postImageUrl",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary post image URL (auto-populated)"
+        },
+        {
+            "key": "eventImagePublicId",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary event image public ID (auto-populated)"
+        },
+        {
+            "key": "eventImagePublicIdEncoded",
+            "value": "",
+            "type": "string",
+            "description": "Base64 encoded event image public ID for URL (auto-populated)"
+        },
+        {
+            "key": "eventImageUrl",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary event image URL (auto-populated)"
+        },
+        {
+            "key": "cloudinarySignature",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary upload signature (auto-populated)"
+        },
+        {
+            "key": "cloudinaryTimestamp",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary timestamp (auto-populated)"
+        },
+        {
+            "key": "cloudinaryFolder",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary folder path (auto-populated)"
+        },
+        {
+            "key": "cloudinaryApiKey",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary API key (auto-populated)"
+        },
+        {
+            "key": "cloudinaryCloudName",
+            "value": "",
+            "type": "string",
+            "description": "Cloudinary cloud name (auto-populated)"
+        }
+    ]
+}
