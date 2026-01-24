@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
@@ -21,6 +22,8 @@ import { User } from '@prisma/client';
 
 @Controller('api')
 export class UploadController {
+  private readonly logger = new Logger(UploadController.name);
+
   constructor(private readonly uploadService: UploadService) {}
 
   // S3 Upload Endpoints (Existing - Do Not Modify)
@@ -85,8 +88,15 @@ export class UploadController {
     if (!file.mimetype.startsWith('image/')) {
       throw new BadRequestException('File must be an image');
     }
+    this.logger.log(
+      `Uploading post image to Cloudinary for user ${user.id} with type ${file.mimetype}`
+    );
 
     const result = await this.uploadService.uploadPostImageToCloudinary(user.id, file.buffer);
+
+    this.logger.log(
+      `Uploaded post image for user ${user.id} to publicId ${result.publicId} (format=${result.format}, width=${result.width}, height=${result.height})`
+    );
     return {
       success: true,
       data: {
