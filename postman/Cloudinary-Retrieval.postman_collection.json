@@ -1,0 +1,162 @@
+{
+    "info": {
+        "name": "Cloudinary Retrieval & Management API",
+        "description": "Collection for testing Cloudinary image retrieval, listing, and deletion endpoints\n\n📋 OPERATIONS:\n\n✅ GET IMAGE METADATA\n- Retrieve details about a specific image by public_id\n\n📋 LIST IMAGES\n- Get all post images for user\n- Get all event images for user\n\n🗑️ DELETE IMAGE\n- Remove an image from Cloudinary",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "📥 Retrieval Operations",
+            "item": [
+                {
+                    "name": "Get Image Metadata",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/images/cloudinary/{{publicIdEncoded}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "images",
+                                "cloudinary",
+                                "{{publicIdEncoded}}"
+                            ]
+                        },
+                        "description": "Get metadata for a specific image\n\nIMPORTANT: The publicId must be base64 encoded in the URL\nExample:\n- Original: posts/user-123/abc456\n- Encoded: cG9zdHMvdXNlci0xMjMvYWJjNDU2\n\nSet the 'publicIdEncoded' variable with the base64 encoded public_id"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Post Images",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/posts/images/list?maxResults=50",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "posts",
+                                "images",
+                                "list"
+                            ],
+                            "query": [
+                                {
+                                    "key": "maxResults",
+                                    "value": "50",
+                                    "description": "Max 100, default 50"
+                                }
+                            ]
+                        },
+                        "description": "Get all post images for the authenticated user\n\nQuery Parameters:\n- maxResults: Number of images to return (default: 50, max: 100)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "List Event Images",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/events/images/list?maxResults=50",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "events",
+                                "images",
+                                "list"
+                            ],
+                            "query": [
+                                {
+                                    "key": "maxResults",
+                                    "value": "50",
+                                    "description": "Max 100, default 50"
+                                }
+                            ]
+                        },
+                        "description": "Get all event images for the authenticated user\n\nQuery Parameters:\n- maxResults: Number of images to return (default: 50, max: 100)"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Retrieve image information from Cloudinary"
+        },
+        {
+            "name": "🗑️ Deletion Operations",
+            "item": [
+                {
+                    "name": "Delete Image",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{accessToken}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/images/cloudinary/{{publicIdEncoded}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "images",
+                                "cloudinary",
+                                "{{publicIdEncoded}}"
+                            ]
+                        },
+                        "description": "Delete an image from Cloudinary\n\nIMPORTANT: The publicId must be base64 encoded in the URL\nExample:\n- Original: posts/user-123/abc456\n- Encoded: cG9zdHMvdXNlci0xMjMvYWJjNDU2\n\nSet the 'publicIdEncoded' variable with the base64 encoded public_id\n\n⚠️ WARNING: This action cannot be undone!"
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Remove images from Cloudinary"
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string",
+            "description": "Your JWT access token"
+        },
+        {
+            "key": "publicIdEncoded",
+            "value": "",
+            "type": "string",
+            "description": "Base64 encoded public_id (e.g., cG9zdHMvdXNlci0xMjMvYWJjNDU2)"
+        }
+    ]
+}
