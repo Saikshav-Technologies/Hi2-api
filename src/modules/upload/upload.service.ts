@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { generatePostImageUploadUrl, generateEventImageUploadUrl } from '../../utils/presignedUrl';
 import {
   generatePostImageCloudinarySignature,
@@ -14,9 +14,12 @@ import {
   getAvatarImageUrl,
   deleteAvatarFromCloudinary,
 } from '../../utils/cloudinary';
+import { PrismaService } from '../../common/prisma/prisma.service';
 
 @Injectable()
 export class UploadService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async generatePostImageUploadUrl(userId: string, contentType: string) {
     return await generatePostImageUploadUrl(userId, contentType);
   }
@@ -67,7 +70,14 @@ export class UploadService {
 
   // Avatar methods
   async uploadAvatarToCloudinary(userId: string, imageBuffer: Buffer) {
-    return await uploadAvatarToCloudinary(userId, imageBuffer);
+    const uploadResult = await uploadAvatarToCloudinary(userId, imageBuffer);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: uploadResult.secureUrl },
+    });
+
+    return uploadResult;
   }
 
   async getAvatarImageUrl(userId: string) {
