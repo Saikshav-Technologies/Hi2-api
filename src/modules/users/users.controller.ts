@@ -8,6 +8,7 @@ import {
   Query,
   UseGuards,
   ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -24,10 +25,7 @@ export class UsersController {
 
   @Get(':userId')
   @UseGuards(OptionalAuthGuard)
-  async getProfile(
-    @Param('userId') userId: string,
-    @CurrentUser() currentUser?: User,
-  ) {
+  async getProfile(@Param('userId') userId: string, @CurrentUser() currentUser?: User) {
     const profile = await this.usersService.getProfile(userId, currentUser?.id);
     return {
       success: true,
@@ -68,11 +66,24 @@ export class UsersController {
     };
   }
 
+  @Get('avatar/presigned-url')
+  async getAvatarUrl(@Query('key') key: string) {
+    console.log('Received key:', key);
+    if (!key) {
+      throw new BadRequestException('Key query parameter is required');
+    }
+    const url = await this.usersService.getAvatarUrl(key);
+    return {
+      success: true,
+      data: { url },
+    };
+  }
+
   @Get(':userId/posts')
   async getUserPosts(
     @Param('userId') userId: string,
     @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10
   ) {
     const result = await this.usersService.getUserPosts(userId, page, limit);
     return {
