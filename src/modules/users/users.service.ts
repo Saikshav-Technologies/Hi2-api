@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
-import { generatePresignedUploadUrl, getS3Url } from '../../utils/s3';
+import { generatePresignedUploadUrl, generatePresignedGetUrl, getS3Url } from '../../utils/s3';
 
 @Injectable()
 export class UsersService {
@@ -147,6 +147,12 @@ export class UsersService {
       uploadUrl,
       key,
     };
+  }
+
+  async getAvatarUrl(key: string): Promise<string> {
+    // Generate a presigned URL that expires in 1 hour (3600 seconds)
+    const url = await generatePresignedGetUrl(key, 3600);
+    return url;
   }
 
   async getUserPosts(userId: string, page = 1, limit = 10) {
