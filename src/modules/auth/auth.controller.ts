@@ -4,6 +4,9 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { LogoutDto } from './dto/logout.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/user.decorator';
 import { User } from '@prisma/client';
@@ -70,6 +73,36 @@ export class AuthController {
     return {
       success: true,
       message: 'Logged out from all devices',
+    };
+  }
+
+  @Post('password-reset/request')
+  @HttpCode(HttpStatus.OK)
+  async requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
+    const result = await this.authService.requestPasswordReset(dto.email);
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
+  @Post('password-reset/verify-otp')
+  @HttpCode(HttpStatus.OK)
+  async verifyOtp(@Body() dto: VerifyOtpDto) {
+    const result = await this.authService.verifyOtp(dto.email, dto.otp);
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
+  @Post('password-reset/reset')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    const result = await this.authService.resetPassword(dto.email, dto.otp, dto.newPassword);
+    return {
+      success: true,
+      data: result,
     };
   }
 }

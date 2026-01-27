@@ -1,5 +1,12 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
+import { RedisService } from '../../common/redis/redis.service';
 import { hashPassword, comparePassword } from '../../utils/password';
 import { JwtService } from '@nestjs/jwt';
 import { config } from '../../config/env';
@@ -9,7 +16,8 @@ import { User } from '@prisma/client';
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private redisService: RedisService
   ) {}
 
   async register(
@@ -165,5 +173,119 @@ export class AuthService {
         expiresIn: config.jwt.refreshExpiresIn,
       }
     );
+  }
+
+  async requestPasswordReset(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User with this email does not exist');
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Store OTP in Redis with 10 minutes expiration
+    const redis = this.redisService.getClient();
+    const otpKey = `password_reset_otp:${email}`;
+    await redis.setex(otpKey, 600, otp); // 600 seconds = 10 minutes
+
+    // Store attempt count to prevent brute force
+    const attemptKey = `password_reset_attempts:${email}`;
+    await redis.incr(attemptKey);
+    await redis.expire(attemptKey, 3600); // Reset attempts after 1 hour
+
+    // TODO: Send OTP via email service
+    // For now, return OTP in development mode (remove in production)
+    if (config.env === 'development') {
+      return {
+        message: 'OTP sent successfully',
+        otp, // Only in development
+        expiresIn: '10 minutes',
+      };
+    }
+
+    return {
+      message: 'OTP sent to your email address',
+      expiresIn: '10 minutes',
+    };
+  }
+
+  async verifyOtp(email: string, otp: string) {
+    const redis = this.redisService.getClient();
+
+    // Check attempt count
+    const attemptKey = `password_reset_attempts:${email}`;
+    const attempts = await redis.get(attemptKey);
+
+    if (attempts && parseInt(attempts) > 5) {
+      throw new BadRequestException('Too many attempts. Please request a new OTP after 1 hour');
+    }
+
+    const otpKey = `password_reset_otp:${email}`;
+    const storedOtp = await redis.get(otpKey);
+
+    if (!storedOtp) {
+      throw new BadRequestException('OTP has expired or does not exist. Please request a new OTP');
+    }
+
+    if (storedOtp !== otp) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    // OTP is valid - it will remain active until used in resetPassword or expires
+    return {
+      message: 'OTP verified successfully. You can now reset your password.',
+    };
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string) {
+    const redis = this.redisService.getClient();
+
+    // Verify OTP one more time
+    const otpKey = `password_reset_otp:${email}`;
+    const storedOtp = await redis.get(otpKey);
+
+    if (!storedOtp) {
+      throw new BadRequestException('OTP has expired or does not exist. Please request a new OTP');
+    }
+
+    if (storedOtp !== otp) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    // Find user
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Hash new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    // Update password
+    await this.prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    // Clear OTP and reset token
+    await redis.del(otpKey);
+    await redis.del(`password_reset_token:${email}`);
+    await redis.del(`password_reset_attempts:${email}`);
+
+    // Logout from all devices for security
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId: user.id },
+    });
+
+    return {
+      message: 'Password reset successfully. Please login with your new password',
+    };
   }
 }
