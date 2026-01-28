@@ -18,8 +18,14 @@
         "url": {
           "raw": "{{base_url}}/api/users/profile",
           "protocol": "http",
-          "host": ["{{base_url}}"],
-          "path": ["api", "users", "profile"]
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profile"
+          ]
         }
       }
     },
@@ -44,8 +50,14 @@
         "url": {
           "raw": "{{base_url}}/api/users/profile",
           "protocol": "http",
-          "host": ["{{base_url}}"],
-          "path": ["api", "users", "profile"]
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profile"
+          ]
         }
       }
     },
@@ -72,8 +84,14 @@
         "url": {
           "raw": "{{base_url}}/api/users/avatar",
           "protocol": "http",
-          "host": ["{{base_url}}"],
-          "path": ["api", "users", "avatar"]
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "avatar"
+          ]
         }
       }
     },
@@ -85,8 +103,14 @@
         "url": {
           "raw": "{{base_url}}/api/users/:id",
           "protocol": "http",
-          "host": ["{{base_url}}"],
-          "path": ["api", "users", ":id"],
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            ":id"
+          ],
           "variable": [
             {
               "key": "id",
@@ -94,6 +118,34 @@
             }
           ]
         }
+      }
+    },
+    {
+      "name": "Get Avatar URL",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/users/avatar/:key",
+          "protocol": "http",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "avatar",
+            ":key"
+          ],
+          "variable": [
+            {
+              "key": "key",
+              "value": "avatars/userId/1234567890-avatar",
+              "description": "S3 key for the avatar image"
+            }
+          ]
+        },
+        "description": "Get a presigned URL for accessing an avatar image from S3 using its key"
       }
     },
     {
@@ -109,8 +161,14 @@
         "url": {
           "raw": "{{base_url}}/api/users/profile",
           "protocol": "http",
-          "host": ["{{base_url}}"],
-          "path": ["api", "users", "profile"]
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profile"
+          ]
         }
       }
     }
@@ -128,4 +186,3 @@
     }
   ]
 }
-
