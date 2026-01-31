@@ -63,10 +63,13 @@ export class UsersService {
       lastName?: string;
       username?: string;
       bio?: string;
-      birthday?: Date;
+      birthday?: Date | string | null;
       isPrivate?: boolean;
     }
   ) {
+    if (typeof data.birthday === 'string' && data.birthday.trim() === '') {
+      data.birthday = null;
+    }
     if (data.username) {
       const existing = await this.prisma.user.findUnique({
         where: { username: data.username },
