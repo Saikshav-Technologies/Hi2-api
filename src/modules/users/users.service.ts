@@ -142,7 +142,12 @@ export class UsersService {
   async generateAvatarUploadUrl(userId: string, contentType: string) {
     const key = `avatars/${userId}/${Date.now()}-avatar`;
     const uploadUrl = await generatePresignedUploadUrl(key, contentType);
-
+    console.log('Generated upload URL:', uploadUrl);
+    // save key to user's avatarKey field 
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: key },
+    });
     return {
       uploadUrl,
       key,
