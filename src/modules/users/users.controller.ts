@@ -36,9 +36,18 @@ export class UsersController {
   @Put('profile')
   @UseGuards(JwtAuthGuard)
   async updateProfile(@CurrentUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
+    let birthday: Date | null | undefined = undefined;
+
+    if (updateProfileDto.birthday === null) {
+      birthday = null;
+    } else if (updateProfileDto.birthday) {
+      const parsed = new Date(updateProfileDto.birthday);
+      birthday = Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
     const profile = await this.usersService.updateProfile(user.id, {
       ...updateProfileDto,
-      birthday: updateProfileDto.birthday ? new Date(updateProfileDto.birthday) : undefined,
+      birthday,
     });
     return {
       success: true,

@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsBoolean, IsDateString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdateProfileDto {
   @IsString()
@@ -17,9 +18,9 @@ export class UpdateProfileDto {
   @IsOptional()
   bio?: string;
 
-  @IsDateString()
+  @Transform(({ value }) => (value === '' || value === null ? null : value))
   @IsOptional()
-  birthday?: string;
+  birthday?: string | null;
 
   @IsBoolean()
   @IsOptional()

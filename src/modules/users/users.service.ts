@@ -63,10 +63,13 @@ export class UsersService {
       lastName?: string;
       username?: string;
       bio?: string;
-      birthday?: Date;
+      birthday?: Date | string | null;
       isPrivate?: boolean;
     }
   ) {
+    if (typeof data.birthday === 'string' && data.birthday.trim() === '') {
+      data.birthday = null;
+    }
     if (data.username) {
       const existing = await this.prisma.user.findUnique({
         where: { username: data.username },
@@ -142,7 +145,12 @@ export class UsersService {
   async generateAvatarUploadUrl(userId: string, contentType: string) {
     const key = `avatars/${userId}/${Date.now()}-avatar`;
     const uploadUrl = await generatePresignedUploadUrl(key, contentType);
-
+    console.log('Generated upload URL:', uploadUrl);
+    // save key to user's avatarKey field 
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: key },
+    });
     return {
       uploadUrl,
       key,

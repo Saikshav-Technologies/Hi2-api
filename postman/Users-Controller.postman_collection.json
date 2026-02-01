@@ -1,0 +1,328 @@
+{
+    "info": {
+        "_postman_id": "users-controller-collection",
+        "name": "Users Controller API",
+        "description": "Complete Postman collection for Users Controller endpoints including profile management, avatar upload, and user posts",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{access_token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Get User Profile",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/users/:userId",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "{{user_id}}",
+                            "description": "User ID to fetch profile for"
+                        }
+                    ]
+                },
+                "description": "Get user profile by userId. This endpoint uses OptionalAuthGuard, so authentication is optional. If authenticated, it will show relationship status with the current user."
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Profile (Public)",
+            "request": {
+                "auth": {
+                    "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/users/:userId",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "cltest123",
+                            "description": "User ID to fetch profile for"
+                        }
+                    ]
+                },
+                "description": "Get user profile without authentication. Will return public profile information only."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Profile",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"username\": \"johndoe\",\n  \"bio\": \"Software developer and tech enthusiast\",\n  \"birthday\": \"1995-06-15\",\n  \"isPrivate\": false\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/profile",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "profile"
+                    ]
+                },
+                "description": "Update the authenticated user's profile. All fields are optional. Birthday should be in ISO date format (YYYY-MM-DD)."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Profile - Partial",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"bio\": \"Updated bio text\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/profile",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "profile"
+                    ]
+                },
+                "description": "Update only specific fields of the user profile. All fields are optional."
+            },
+            "response": []
+        },
+        {
+            "name": "Generate Avatar Upload URL",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"contentType\": \"image/jpeg\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/avatar/upload-url",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "avatar",
+                        "upload-url"
+                    ]
+                },
+                "description": "Generate a presigned URL for uploading an avatar image. Supported content types: image/jpeg, image/png, image/gif, image/webp"
+            },
+            "response": []
+        },
+        {
+            "name": "Update Avatar",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"key\": \"avatars/user-123/avatar-1234567890.jpg\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/users/avatar",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "avatar"
+                    ]
+                },
+                "description": "Update user's avatar with the S3 key after uploading the file. Use this endpoint after successfully uploading the avatar to the presigned URL."
+            },
+            "response": []
+        },
+        {
+            "name": "Get Avatar Presigned URL",
+            "request": {
+                "auth": {
+                    "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/users/avatar/presigned-url?key=avatars/user-123/avatar-1234567890.jpg",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        "avatar",
+                        "presigned-url"
+                    ],
+                    "query": [
+                        {
+                            "key": "key",
+                            "value": "avatars/user-123/avatar-1234567890.jpg",
+                            "description": "S3 key of the avatar image"
+                        }
+                    ]
+                },
+                "description": "Get a presigned URL to view/download an avatar image. No authentication required."
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Posts",
+            "request": {
+                "auth": {
+                    "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/users/:userId/posts?page=1&limit=10",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId",
+                        "posts"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1",
+                            "description": "Page number (default: 1)"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10",
+                            "description": "Number of posts per page (default: 10)"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "{{user_id}}",
+                            "description": "User ID to fetch posts for"
+                        }
+                    ]
+                },
+                "description": "Get paginated list of posts created by a specific user. No authentication required."
+            },
+            "response": []
+        },
+        {
+            "name": "Get User Posts - Page 2",
+            "request": {
+                "auth": {
+                    "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/users/:userId/posts?page=2&limit=20",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "users",
+                        ":userId",
+                        "posts"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "2",
+                            "description": "Page number"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "20",
+                            "description": "Number of posts per page"
+                        }
+                    ],
+                    "variable": [
+                        {
+                            "key": "userId",
+                            "value": "{{user_id}}",
+                            "description": "User ID to fetch posts for"
+                        }
+                    ]
+                },
+                "description": "Example of fetching the second page of user posts with a custom limit."
+            },
+            "response": []
+        }
+    ]
+}

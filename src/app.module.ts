@@ -16,11 +16,17 @@ import { UploadModule } from './modules/upload/upload.module';
 import { AppController } from './app.controller';
 import { config } from './config/env';
 
+// Determine environment file based on NODE_ENV
+const getEnvFilePath = () => {
+  const env = process.env.NODE_ENV || 'development';
+  return `.env.${env}`;
+};
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: [getEnvFilePath(), '.env'], // Fallback to .env if specific env file doesn't exist
     }),
     JwtModule.register({
       global: true,

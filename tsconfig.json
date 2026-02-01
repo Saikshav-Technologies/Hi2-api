@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "typeRoots": [
       "src/types",
       "node_modules/@types"
