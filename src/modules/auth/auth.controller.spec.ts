@@ -53,6 +53,7 @@ describe('AuthController', () => {
 
   describe('register', () => {
     it('returns success response on register', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: RegisterDto = {
         email: 'user@example.com',
         password: 'P@ssw0rd!',
@@ -88,7 +89,7 @@ describe('AuthController', () => {
       };
       authService.register.mockResolvedValue(serviceResult);
 
-      await expect(controller.register(dto)).resolves.toEqual({
+      await expect(controller.register(dto, res)).resolves.toEqual({
         success: true,
         data: serviceResult,
       });
@@ -106,6 +107,7 @@ describe('AuthController', () => {
     });
 
     it('throws when AuthService.register fails', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: RegisterDto = {
         email: 'user@example.com',
         password: 'P@ssw0rd!',
@@ -118,13 +120,14 @@ describe('AuthController', () => {
       const error = new HttpException('Email exists', HttpStatus.CONFLICT);
       authService.register.mockRejectedValue(error);
 
-      await expect(controller.register(dto)).rejects.toBe(error);
+      await expect(controller.register(dto, res)).rejects.toBe(error);
       expect(authService.register).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('login', () => {
     it('returns success response on login', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: LoginDto = { email: 'user@example.com', password: 'P@ssw0rd!' };
       const user = {
         id: 'user-id',
@@ -148,7 +151,7 @@ describe('AuthController', () => {
       const serviceResult = { user, accessToken: 'access', refreshToken: 'refresh' };
       authService.login.mockResolvedValue(serviceResult);
 
-      await expect(controller.login(dto)).resolves.toEqual({
+      await expect(controller.login(dto, res)).resolves.toEqual({
         success: true,
         data: serviceResult,
       });
@@ -158,22 +161,24 @@ describe('AuthController', () => {
     });
 
     it('throws when AuthService.login fails', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: LoginDto = { email: 'user@example.com', password: 'bad' };
       const error = new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       authService.login.mockRejectedValue(error);
 
-      await expect(controller.login(dto)).rejects.toBe(error);
+      await expect(controller.login(dto, res)).rejects.toBe(error);
       expect(authService.login).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('refreshToken', () => {
     it('returns success response on refresh', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: RefreshTokenDto = { refreshToken: 'refresh-token' };
       const serviceResult = { accessToken: 'new-access', refreshToken: 'new-refresh' };
       authService.refreshToken.mockResolvedValue(serviceResult);
 
-      await expect(controller.refreshToken(dto)).resolves.toEqual({
+      await expect(controller.refreshToken(dto, res)).resolves.toEqual({
         success: true,
         data: serviceResult,
       });
@@ -183,21 +188,23 @@ describe('AuthController', () => {
     });
 
     it('throws when AuthService.refreshToken fails', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: RefreshTokenDto = { refreshToken: 'invalid' };
       const error = new HttpException('Token expired', HttpStatus.UNAUTHORIZED);
       authService.refreshToken.mockRejectedValue(error);
 
-      await expect(controller.refreshToken(dto)).rejects.toBe(error);
+      await expect(controller.refreshToken(dto, res)).rejects.toBe(error);
       expect(authService.refreshToken).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('logout', () => {
     it('calls AuthService.logout when refreshToken is provided', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: LogoutDto = { refreshToken: 'refresh-token' };
       authService.logout.mockResolvedValue(undefined);
 
-      await expect(controller.logout(dto)).resolves.toEqual({
+      await expect(controller.logout(dto, res)).resolves.toEqual({
         success: true,
         message: 'Logged out successfully',
       });
@@ -207,9 +214,10 @@ describe('AuthController', () => {
     });
 
     it('does not call AuthService.logout when refreshToken is missing', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: LogoutDto = { refreshToken: undefined };
 
-      await expect(controller.logout(dto)).resolves.toEqual({
+      await expect(controller.logout(dto, res)).resolves.toEqual({
         success: true,
         message: 'Logged out successfully',
       });
@@ -218,11 +226,12 @@ describe('AuthController', () => {
     });
 
     it('throws when AuthService.logout fails', async () => {
+      const res = { cookie: jest.fn(), clearCookie: jest.fn() } as any;
       const dto: LogoutDto = { refreshToken: 'refresh-token' };
       const error = new HttpException('Logout failed', HttpStatus.BAD_REQUEST);
       authService.logout.mockRejectedValue(error);
 
-      await expect(controller.logout(dto)).rejects.toBe(error);
+      await expect(controller.logout(dto, res)).rejects.toBe(error);
       expect(authService.logout).toHaveBeenCalledTimes(1);
     });
   });
