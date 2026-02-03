@@ -21,6 +21,8 @@ model User {
   contact     String?
   birthday    DateTime?
   isPrivate   Boolean   @default(false)
+  showStatus  Boolean   @default(true)
+  allowMessageRequests Boolean @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

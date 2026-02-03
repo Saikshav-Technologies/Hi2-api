@@ -60,7 +60,7 @@ export class UsersController {
   @Patch('privacy')
   @UseGuards(JwtAuthGuard)
   async updatePrivacy(@CurrentUser() user: User, @Body() updatePrivacyDto: UpdatePrivacyDto) {
-    const profile = await this.usersService.updatePrivacy(user.id, updatePrivacyDto.isPrivate);
+    const profile = await this.usersService.updatePrivacy(user.id, updatePrivacyDto);
     return {
       success: true,
       data: profile,

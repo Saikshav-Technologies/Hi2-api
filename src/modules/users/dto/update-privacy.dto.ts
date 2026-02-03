@@ -1,6 +1,15 @@
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
 
 export class UpdatePrivacyDto {
   @IsBoolean()
-  isPrivate: boolean;
+  @IsOptional()
+  isPrivate?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  showStatus?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  allowMessageRequests?: boolean;
 }

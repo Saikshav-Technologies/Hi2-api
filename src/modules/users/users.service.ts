@@ -101,10 +101,17 @@ export class UsersService {
     return user;
   }
 
-  async updatePrivacy(userId: string, isPrivate: boolean) {
+  async updatePrivacy(
+    userId: string,
+    data: {
+      isPrivate?: boolean;
+      showStatus?: boolean;
+      allowMessageRequests?: boolean;
+    }
+  ) {
     const user = await this.prisma.user.update({
       where: { id: userId },
-      data: { isPrivate },
+      data,
       select: {
         id: true,
         email: true,
@@ -115,6 +122,8 @@ export class UsersService {
         avatarUrl: true,
         birthday: true,
         isPrivate: true,
+        showStatus: true,
+        allowMessageRequests: true,
         createdAt: true,
         updatedAt: true,
       },
