@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsOptional, IsBoolean } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -22,4 +22,12 @@ export class RegisterDto {
 
   @IsString()
   contact: string;
+
+  @IsBoolean()
+  @IsOptional()
+  showStatus?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  allowMessageRequests?: boolean;
 }

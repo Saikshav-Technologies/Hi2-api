@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Put,
+  Patch,
   Post,
   Body,
   Param,
@@ -18,6 +19,7 @@ import { User } from '@prisma/client';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { AvatarUploadDto } from './dto/avatar-upload.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
+import { UpdatePrivacyDto } from './dto/update-privacy.dto';
 
 @Controller('api/users')
 export class UsersController {
@@ -49,6 +51,16 @@ export class UsersController {
       ...updateProfileDto,
       birthday,
     });
+    return {
+      success: true,
+      data: profile,
+    };
+  }
+
+  @Patch('privacy')
+  @UseGuards(JwtAuthGuard)
+  async updatePrivacy(@CurrentUser() user: User, @Body() updatePrivacyDto: UpdatePrivacyDto) {
+    const profile = await this.usersService.updatePrivacy(user.id, updatePrivacyDto);
     return {
       success: true,
       data: profile,

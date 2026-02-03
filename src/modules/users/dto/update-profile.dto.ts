@@ -25,4 +25,12 @@ export class UpdateProfileDto {
   @IsBoolean()
   @IsOptional()
   isPrivate?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  showStatus?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  allowMessageRequests?: boolean;
 }

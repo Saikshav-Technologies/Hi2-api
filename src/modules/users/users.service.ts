@@ -101,6 +101,37 @@ export class UsersService {
     return user;
   }
 
+  async updatePrivacy(
+    userId: string,
+    data: {
+      isPrivate?: boolean;
+      showStatus?: boolean;
+      allowMessageRequests?: boolean;
+    }
+  ) {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        bio: true,
+        avatarUrl: true,
+        birthday: true,
+        isPrivate: true,
+        showStatus: true,
+        allowMessageRequests: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return user;
+  }
+
   async updateAvatar(userId: string, imageKey: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -146,7 +177,7 @@ export class UsersService {
     const key = `avatars/${userId}/${Date.now()}-avatar`;
     const uploadUrl = await generatePresignedUploadUrl(key, contentType);
     console.log('Generated upload URL:', uploadUrl);
-    // save key to user's avatarKey field 
+    // save key to user's avatarKey field
     await this.prisma.user.update({
       where: { id: userId },
       data: { avatarUrl: key },
